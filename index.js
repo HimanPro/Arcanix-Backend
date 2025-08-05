@@ -429,6 +429,7 @@ const Configs = require("./models/Configs");
 const { WebSocketProvider } = require("ethers");
 const database = require("./database");
 const Registration = require("./models/Registration");
+const signup = require("./models/signup");
 database();
 
 const provider = new WebSocketProvider(process.env.contractRPC_URL);
@@ -481,6 +482,22 @@ async function processEvents(events) {
       try {
         let isNotReg = await Registration.findOne({ user: args[0] });
         if (!isNotReg) {
+
+          let notsigned = await signup.findOne({ user: args[0] });
+          if (!notsigned) {
+          
+            let userId =
+            "ARX" +
+            Math.floor(Math.random() * 100000)
+              .toString()
+              .padStart(5, "0");
+
+            await signup.create({
+              user: args[0],
+              userId: userId
+            });
+          }
+
           let referrer = await Registration.findOne({
             user: args[1],
           });
@@ -488,11 +505,6 @@ async function processEvents(events) {
             referrer = { userId: 0 };
           }
 
-          let userId =
-            "ARX" +
-            Math.floor(Math.random() * 100000)
-              .toString()
-              .padStart(5, "0");
 
           await Registration.create({
             user: args[0],
@@ -503,6 +515,26 @@ async function processEvents(events) {
             txHash: transactionHash,
             block: blockNumber,
             timestamp: timestamp,
+          });
+        }
+      } catch (e) {
+        console.log("Error (Registration Event):", e.message);
+      }
+    } else if(eventName == "Registrationinvst") {
+      try {
+        let isNotReg = await signup.findOne({ user: args[0] });
+        if (!isNotReg) {
+         
+
+          let userId =
+            "ARX" +
+            Math.floor(Math.random() * 100000)
+              .toString()
+              .padStart(5, "0");
+
+          await signup.create({
+            user: args[0],
+            userId: userId
           });
         }
       } catch (e) {
