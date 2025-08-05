@@ -570,6 +570,6 @@ async function listEvent() {
 
 listEvent();
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+const server = app.listen(3000, () => {
+  console.log("Server running!");
 });
