@@ -430,7 +430,6 @@ const { WebSocketProvider } = require("ethers");
 const database = require("./database");
 const Registration = require("./models/Registration");
 database();
-app.use("/api", dashboardRouter);
 
 const provider = new WebSocketProvider(process.env.contractRPC_URL);
 const contract = new ethers.Contract(
@@ -512,6 +511,7 @@ async function processEvents(events) {
     }
   }
 }
+app.use("/api", dashboardRouter);
 
 async function updateBlock(blockNumber) {
   console.log("Updating lastSyncBlock to:", blockNumber);
