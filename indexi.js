@@ -66,11 +66,11 @@ async function getTimestamp(blockNumber) {
 async function processEvents(events) {
   //console.log("events.length ",events.length)
   for (let i = 0; i < events.length; i++) {
-    const { blockNumber, transactionHash, returnValues, event } = events[i];
+    const { blockNumber, transactionHash, args, event } = events[i];
     // console.log(blockNumber, transactionHash, event);
     const timestamp = await getTimestamp(blockNumber);
 
-     if (eventName == "Registrationico") {
+     if (event == "Registrationico") {
           try {
             let isNotReg = await Registration.findOne({ user: args[0] });
             if (!isNotReg) {
@@ -112,7 +112,7 @@ async function processEvents(events) {
           } catch (e) {
             console.log("Error (Registration Event):", e.message);
           }
-        } else if(eventName == "Registrationinvst") {
+        } else if(event == "Registrationinvst") {
           try {
             let isNotReg = await signup.findOne({ user: args[0] });
             if (!isNotReg) {
