@@ -546,7 +546,7 @@ async function processEvents(events) {
 app.use("/api", dashboardRouter);
 
 async function updateBlock(blockNumber) {
-  console.log("Updating lastSyncBlock to:", blockNumber);
+  // console.log("Updating lastSyncBlock to:", blockNumber);
   await Configs.updateOne({}, { lastSyncBlock: blockNumber });
 }
 
