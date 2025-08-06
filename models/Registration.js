@@ -6,11 +6,11 @@ const registrationSchema = new mongoose.Schema({
     required: true,
     index: true,
   },
-  uId: {
-    type: String,
-    required: true,
-    index: true,
-  },
+  // uId: {
+  //   type: String,
+  //   required: true,
+  //   index: true,
+  // },
   referrer: {
     type: String,
     required: true,
@@ -21,10 +21,10 @@ const registrationSchema = new mongoose.Schema({
     index: true,
     unique: true
   },
-  rId: {
-    type: String,
-    index: true,
-  },
+  // rId: {
+  //   type: String,
+  //   index: true,
+  // },
   txHash: {
     type: String,
     required: true,
@@ -40,6 +40,9 @@ const registrationSchema = new mongoose.Schema({
     type: Number,
     required: true,
     index: true,
+  },
+  regfrom: {
+    type: String
   },
 });
 

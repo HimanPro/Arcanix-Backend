@@ -6,6 +6,8 @@ const cors = require("cors");
 const config2 = require("./models/Configs");
 const app = express();
 const dashboardRouter = require("./routes/Dashboard");
+const signup = require("./models/signup");
+const Registration = require("./models/Registration");
 
 app.use(express.json());
 
@@ -43,7 +45,7 @@ const web3 = new Web3(
   })
 );
 
-const ABI = [{"constant":false,"inputs":[{"name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"newImplementation","type":"address"},{"name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[],"name":"implementation","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_logic","type":"address"},{"name":"_admin","type":"address"}],"payable":true,"stateMutability":"payable","type":"constructor"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":false,"name":"previousAdmin","type":"address"},{"indexed":false,"name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"implementation","type":"address"}],"name":"Upgraded","type":"event"}]
+const ABI = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"DailyROIClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"usdtAmount","type":"uint256"},{"indexed":false,"internalType":"uint8","name":"plan","type":"uint8"}],"name":"Investment","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"address","name":"receiver","type":"address"},{"indexed":false,"internalType":"uint8","name":"level","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"levelIncome","type":"uint256"}],"name":"LevelIncome","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"RealTokensDistributed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":true,"internalType":"address","name":"receiver","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokens","type":"uint256"}],"name":"ReferralIncome","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"referrer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"referrerId","type":"uint256"}],"name":"Registrationico","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":true,"internalType":"address","name":"referrer","type":"address"},{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"referrerId","type":"uint256"}],"name":"Registrationinvst","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"buyer","type":"address"},{"indexed":false,"internalType":"uint256","name":"usdtAmount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"virtualTokens","type":"uint256"}],"name":"TokensPurchased","type":"event"},{"inputs":[],"name":"RATE","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"adminDistributeRealTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"usdtAmount","type":"uint256"},{"internalType":"uint8","name":"plan","type":"uint8"}],"name":"arxinvest","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address[]","name":"users","type":"address[]"}],"name":"batchDistribute","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"usdtAmount","type":"uint256"}],"name":"buyTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint8","name":"plan","type":"uint8"},{"internalType":"uint256","name":"investId","type":"uint256"}],"name":"claimCapital","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"claimDailyROI","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"plan","type":"uint256"}],"name":"claimDailyROI2","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"plan","type":"uint256"}],"name":"claimDailyROI3","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getCurrentClaimableROI","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"}],"name":"getPurchase","outputs":[{"internalType":"uint256","name":"usdtSpent","type":"uint256"},{"internalType":"uint256","name":"tokensReceived","type":"uint256"},{"internalType":"bool","name":"distributed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"plan","type":"uint256"}],"name":"getROIBreakdown","outputs":[{"internalType":"uint256[]","name":"usdtAmounts","type":"uint256[]"},{"internalType":"uint256[]","name":"claimedROIs","type":"uint256[]"},{"internalType":"uint256[]","name":"claimableROIs","type":"uint256[]"},{"internalType":"uint256[]","name":"timestamps","type":"uint256[]"},{"internalType":"uint256[]","name":"roiPercents","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"idToAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_usdtAddress","type":"address"}],"name":"initialize","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"isUserExists","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"isUserExistsInvst","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"lastUserId","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"purchases","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"invst_ref","type":"address"},{"internalType":"address","name":"ico_ref","type":"address"},{"internalType":"uint256","name":"partnerCount","type":"uint256"},{"internalType":"uint256","name":"usdtSpentico","type":"uint256"},{"internalType":"uint256","name":"usdtSpentinvst","type":"uint256"},{"internalType":"uint256","name":"tokensReceived","type":"uint256"},{"internalType":"uint256","name":"totalROIClaimed","type":"uint256"},{"internalType":"uint256","name":"targetROI","type":"uint256"},{"internalType":"uint256","name":"lastClaimedAt","type":"uint256"},{"internalType":"bool","name":"distributed","type":"bool"},{"internalType":"uint256","name":"refToken","type":"uint256"},{"internalType":"uint256","name":"teambusiness","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"realToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_referrer","type":"address"}],"name":"registrationEx","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_referrer","type":"address"}],"name":"registrationExInvst","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"useradd","type":"address"}],"name":"seeHistroyArx","outputs":[{"components":[{"internalType":"uint256","name":"usdt","type":"uint256"},{"internalType":"uint256","name":"arx","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct ArcanixICO.DetailsICO[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"useradd","type":"address"},{"internalType":"uint256","name":"plan","type":"uint256"}],"name":"seeHistroyInvst","outputs":[{"components":[{"internalType":"uint256","name":"usdtAmount","type":"uint256"},{"internalType":"uint256","name":"plan","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"roiPercent","type":"uint256"},{"internalType":"uint256","name":"claimedROI","type":"uint256"},{"internalType":"bool","name":"stakestatus","type":"bool"}],"internalType":"struct ArcanixICO.Details[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_realToken","type":"address"}],"name":"setRealToken","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"usdtToken","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"withdrawUSDT","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 const contract = new web3.eth.Contract(ABI, process.env.contractAddress);
 
 async function getLastSyncBlock() {
@@ -66,32 +68,31 @@ async function getTimestamp(blockNumber) {
 async function processEvents(events) {
   //console.log("events.length ",events.length)
   for (let i = 0; i < events.length; i++) {
-    const { blockNumber, transactionHash, args, event } = events[i];
-    // console.log(blockNumber, transactionHash, event);
+    const { blockNumber, transactionHash, returnValues, event } = events[i];
+    // console.log(blockNumber, transactionHash, returnValues, event);
     const timestamp = await getTimestamp(blockNumber);
 
      if (event == "Registrationico") {
           try {
-            let isNotReg = await Registration.findOne({ user: args[0] });
+            let userId =
+            "ARX" +
+            Math.floor(Math.random() * 100000)
+              .toString()
+              .padStart(5, "0");
+            let isNotReg = await Registration.findOne({ user: returnValues[0] });
             if (!isNotReg) {
     
-              let notsigned = await signup.findOne({ user: args[0] });
+              let notsigned = await signup.findOne({ user: returnValues[0] });
               if (!notsigned) {
-              
-                let userId =
-                "ARX" +
-                Math.floor(Math.random() * 100000)
-                  .toString()
-                  .padStart(5, "0");
     
                 await signup.create({
-                  user: args[0],
+                  user: returnValues[0],
                   userId: userId
                 });
               }
     
               let referrer = await Registration.findOne({
-                user: args[1],
+                user: returnValues[1],
               });
               if (!referrer) {
                 referrer = { userId: 0 };
@@ -99,14 +100,14 @@ async function processEvents(events) {
     
     
               await Registration.create({
-                user: args[0],
-                uId: args[2],
+                user: returnValues.user,
+                uId: returnValues[2],
                 userId: userId,
-                referrer: args[1],
-                rId: args[3],
+                referrer: returnValues.referrer,
                 txHash: transactionHash,
                 block: blockNumber,
                 timestamp: timestamp,
+                regfrom: "ICO"
               });
             }
           } catch (e) {
@@ -114,19 +115,33 @@ async function processEvents(events) {
           }
         } else if(event == "Registrationinvst") {
           try {
-            let isNotReg = await signup.findOne({ user: args[0] });
+            let userId =
+            "ARX" +
+            Math.floor(Math.random() * 100000)
+              .toString()
+              .padStart(5, "0");
+            let isReg = await Registration.findOne({ user: returnValues[0] });
+            if (!isReg) {
+            let isNotReg = await signup.findOne({ user: returnValues.user });
             if (!isNotReg) {
              
     
-              let userId =
-                "ARX" +
-                Math.floor(Math.random() * 100000)
-                  .toString()
-                  .padStart(5, "0");
+             
     
               await signup.create({
-                user: args[0],
+                user: returnValues[0],
                 userId: userId
+              });
+            }
+
+            await Registration.create({
+                user: returnValues.user,
+                userId: userId,
+                referrer: returnValues.referrer,
+                txHash: transactionHash,
+                block: blockNumber,
+                timestamp: timestamp,
+                regfrom: "INVEST"
               });
             }
           } catch (e) {

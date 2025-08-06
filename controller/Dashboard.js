@@ -1,4 +1,5 @@
 const Registration = require("../models/Registration");
+const signup = require("../models/signup");
 
 const getDashboardData = async (req, res) => {
   try {
@@ -13,16 +14,25 @@ const getDashboardData = async (req, res) => {
 
     const data = await Registration.findOne({ user: address });
 
-    if (!data || data.length === 0) {
+    if (!data) {
       return res.status(404).json({
         success: false,
         message: "No data found",
       });
     }
 
+    // Fetch userId from Signup schema
+    const userRecord = await signup.findOne({ user: data.user });
+
+    // Attach userIdd to the response
+    const result = {
+      ...data._doc,
+      userIdd: userRecord ? userRecord.userId : null,
+    };
+
     return res.status(200).json({
       success: true,
-      data,
+      data: result,
     });
   } catch (error) {
     console.error("Error fetching dashboard data:", error);
