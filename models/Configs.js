@@ -8,4 +8,4 @@ const ConfigsSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Configs", ConfigsSchema);
+module.exports = mongoose.model("confiig", ConfigsSchema);
