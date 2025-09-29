@@ -540,6 +540,26 @@ async function processEvents(events) {
       } catch (e) {
         console.log("Error (Registration Event):", e.message);
       }
+    } else if(eventName == "Investment") {
+      try {
+        let isNotReg = await signup.findOne({ user: args[0] });
+        if (!isNotReg) {
+         
+
+          let userId =
+            "ARX" +
+            Math.floor(Math.random() * 100000)
+              .toString()
+              .padStart(5, "0");
+
+          await signup.create({
+            user: args[0],
+            userId: userId
+          });
+        }
+      } catch (e) {
+        console.log("Error (Registration Event):", e.message);
+      }
     }
   }
 }
