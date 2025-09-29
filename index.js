@@ -446,37 +446,56 @@ const web3 = new Web3(
 
 const contract = new web3.eth.Contract(contractABI, process.env.contractAddress);
 
+
 async function getLastSyncBlock() {
-  let config = await Configs.findOne();
-
-  if (!config) {
-    const currentBlock = await provider.getBlockNumber();
-    config = await Configs.create({ lastSyncBlock: currentBlock });
-  }
-
-  return config.lastSyncBlock;
-}
-
+  let { lastSyncBlock } = await config2.findOne();
+  return lastSyncBlock;
+}  
 async function getEventReceipt(fromBlock, toBlock) {
-  const allEvents = [];
-
-  const eventNames = contractABI
-    .filter((item) => item.type === "event")
-    .map((item) => item.name);
-
-  for (const eventName of eventNames) {
-    const filter = contract.filters[eventName]();
-    const logs = await contract.queryFilter(filter, fromBlock, toBlock);
-    allEvents.push(...logs);
-  }
-
-  return allEvents;
+  let eventsData = await contract.getPastEvents("allEvents", {
+    fromBlock: fromBlock,
+    toBlock: toBlock,
+  });
+  return eventsData;
 }
 
 async function getTimestamp(blockNumber) {
-  const block = await provider.getBlock(blockNumber);
-  return block.timestamp;
+  let { timestamp } = await web3.eth.getBlock(blockNumber);
+  return timestamp;
 }
+
+
+// async function getLastSyncBlock() {
+//   let config = await Configs.findOne();
+
+//   if (!config) {
+//     const currentBlock = await provider.getBlockNumber();
+//     config = await Configs.create({ lastSyncBlock: currentBlock });
+//   }
+
+//   return config.lastSyncBlock;
+// }
+
+// async function getEventReceipt(fromBlock, toBlock) {
+//   const allEvents = [];
+
+//   const eventNames = contractABI
+//     .filter((item) => item.type === "event")
+//     .map((item) => item.name);
+
+//   for (const eventName of eventNames) {
+//     const filter = contract.filters[eventName]();
+//     const logs = await contract.queryFilter(filter, fromBlock, toBlock);
+//     allEvents.push(...logs);
+//   }
+
+//   return allEvents;
+// }
+
+// async function getTimestamp(blockNumber) {
+//   const block = await provider.getBlock(blockNumber);
+//   return block.timestamp;
+// }
 
 async function processEvents(events) {
   for (let i = 0; i < events.length; i++) {
