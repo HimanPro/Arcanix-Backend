@@ -448,7 +448,7 @@ const contract = new web3.eth.Contract(contractABI, process.env.contractAddress)
 
 
 async function getLastSyncBlock() {
-  let { lastSyncBlock } = await config2.findOne();
+  let { lastSyncBlock } = await Configs.findOne();
   return lastSyncBlock;
 }  
 async function getEventReceipt(fromBlock, toBlock) {
