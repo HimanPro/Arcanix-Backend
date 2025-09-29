@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = 3000;
+const Web3 = require("web3");
 const contractABI = [
   {
     anonymous: false,
@@ -432,12 +433,18 @@ const Registration = require("./models/Registration");
 const signup = require("./models/signup");
 database();
 
-const provider = new WebSocketProvider(process.env.contractRPC_URL);
-const contract = new ethers.Contract(
-  process.env.contractAddress,
-  contractABI,
-  provider
+const web3 = new Web3(
+  new Web3.providers.HttpProvider(process.env.RPC_URL, {
+    reconnect: {
+      auto: true,
+      delay: 5000, // ms
+      maxAttempts: 15,
+      onTimeout: false,
+    },
+  })
 );
+
+const contract = new web3.eth.Contract(contractABI, process.env.contractAddress);
 
 async function getLastSyncBlock() {
   let config = await Configs.findOne();
