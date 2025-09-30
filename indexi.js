@@ -154,7 +154,7 @@ async function processEvents(events) {
             if (!userDetails) {
               await stake2.create({
                 user: returnValues.user,
-                amount: usdtAmount,
+                amount: returnValues.usdtAmount,
                 plan: returnValues.plan,
                 investId : returnValues.investId,
                 txHash: transactionHash,
