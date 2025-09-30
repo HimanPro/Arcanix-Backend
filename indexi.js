@@ -153,7 +153,7 @@ async function processEvents(events) {
             let userDetails = await stake2.findOne({ txHash: transactionHash });
             if (!userDetails) {
               await stake2.create({
-                user: returnValues.user,
+                user: returnValues.buyer,
                 amount: returnValues.usdtAmount,
                 plan: returnValues.plan,
                 investId : returnValues.investId,
