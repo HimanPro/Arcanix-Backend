@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const stake2Schema = new Schema(
   {
-    user: { type: String, required: true, unique: true },
+    user: { type: String, required: true },
     amount: { type: Number, required: true },
     plan: { type: Number, required: true },
     investId: { type: Number, required: true },
