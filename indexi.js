@@ -151,7 +151,7 @@ async function processEvents(events) {
         } else if(event == "Investment") {
           try {
             let userDetails = await stake2.findOne({ txHash: transactionHash });
-            if (userDetails) {
+            if (!userDetails) {
               await stake2.create({
                 user: returnValues.user,
                 amount: usdtAmount,
