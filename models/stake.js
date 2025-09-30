@@ -12,13 +12,15 @@ const stake2Schema = new Schema(
       enum: ["active", "matured", "withdrawn"],
       default: "active",
     },
+    txHash: { type: String, required: true },
+    block: { type: Number, required: true },
   },
   { timestamps: true
   }
 );
 
 // Create indexes for unique fields
-// userSchema.index({ mobileNumber: 1, 'documents.pan.number': 1 });
+stake2Schema.index({ user: 1, txHash: 1 });
 const stake2 = mongoose.model("stake2", stake2Schema);
 
 module.exports = stake2;
