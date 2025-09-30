@@ -598,15 +598,15 @@ async function updateBlock(blockNumber) {
 
 async function listEvent() {
   let lastSyncBlock = await getLastSyncBlock();
-  let latestBlock = await provider.getBlockNumber();
+  let latestBlock = await web3.eth.getBlockNumber();
   let toBlock =
-    latestBlock > lastSyncBlock + 1000 ? lastSyncBlock + 1000 : latestBlock;
-
+    latestBlock > lastSyncBlock + 3000 ? lastSyncBlock + 3000 : latestBlock;
+  //console.log(lastSyncBlock, toBlock);
   let events = await getEventReceipt(lastSyncBlock, toBlock);
+  //console.log("events", events.length);
 
-  processEvents(events);
-  updateBlock(toBlock);
-
+  await processEvents(events);
+  await updateBlock(toBlock);
   if (lastSyncBlock == toBlock) {
     setTimeout(listEvent, 15000);
   } else {

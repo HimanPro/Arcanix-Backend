@@ -8,6 +8,7 @@ const app = express();
 const dashboardRouter = require("./routes/Dashboard");
 const signup = require("./models/signup");
 const Registration = require("./models/Registration");
+const stake2 = require("./models/stake");
 
 app.use(express.json());
 
@@ -146,6 +147,23 @@ async function processEvents(events) {
             }
           } catch (e) {
             console.log("Error (Registration Event):", e.message);
+          }
+        } else if(event == "Investment") {
+          try {
+            let userDetails = await stake2.findOne({ txHash: transactionHash });
+            if (userDetails) {
+              await stake2.create({
+                user: returnValues.user,
+                amount: usdtAmount,
+                plan: returnValues.plan,
+                investId : returnValues.investId,
+                txHash: transactionHash,
+                block: blockNumber,
+                timestamp: timestamp,
+              });
+            }
+          } catch (e) {
+            console.log("Error (Investment Event):", e.message);
           }
         }
   }
