@@ -8,7 +8,10 @@ const app = express();
 const dashboardRouter = require("./routes/Dashboard");
 const signup = require("./models/signup");
 const Registration = require("./models/Registration");
+
+
 const stake2 = require("./models/stake");
+const admin_login = require("./models/admin_login");
 
 app.use(express.json());
 
@@ -34,6 +37,7 @@ app.use(
 
 // app.use("/api", routes);
 app.use("/api", dashboardRouter);
+app.use("/api",admin_login)
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(process.env.contractRPC_URL, {
